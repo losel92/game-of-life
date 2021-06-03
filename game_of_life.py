@@ -87,7 +87,7 @@ def main():
   time_elapsed = 0
 
   size = width, height = 1000, 1000
-  cell_size = cell_width, cell_height = width/gridW, height/gridH
+  cell_width, cell_height = width/gridW, height/gridH
   surface = pygame.display.set_mode(size)
   
   while run:
