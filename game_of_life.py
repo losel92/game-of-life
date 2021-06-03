@@ -8,21 +8,22 @@
 # Input an array of coordinates to start as filled ([i, j] where i is the row index and j the column index) - [0,0] is top right
 # Enjoy!
 
-import time
 import random
 import pygame
 from pygame.locals import *
-import sys
 
 # Grid dimensions
-gridW = 10
-gridH = 10
+gridW = 50
+gridH = 50
 
 # The cells that will be starting as alive
 starting = [[0,0], [1,1], [1,2], [2,0], [2,1]]
 
+# This will ignore the starting cells and just randomize it all
+random_start = True
+
 # Seconds per frame
-spf = .2
+spf = .1
 
 # How many times it will run
 generations = 5
@@ -35,6 +36,12 @@ n_grid = [ [0 for x in range( gridW )] for y in range( gridH ) ]
 # Insert the starting cells
 for coord in starting:
   grid[coord[0]][coord[1]] = 1
+
+if random_start:
+  for i, row in enumerate(grid):
+    for j, cell in enumerate(row):
+      grid[i][j] = random.randint(0,1)
+
 
 def decideFate(y,x):
   # This cell: [i][j]
@@ -70,30 +77,6 @@ def get_next_grid():
   
   return temp_grid
 
-# for j, row in enumerate(grid):
-#   sadsadgrid = get_next_grid()
-#   print(str(row) + " -- " + str(n_grid[j]))
-
-# for i in range(generations):
-#   for j, row in enumerate(grid):
-#     for k in row: 
-#       if k > 0: 
-#         print(str("[1]"),end="")
-#       else: 
-#         print(str("[0]"),end="")
-#     print("\n",end="")
-#     # print(str(row) + " -- " + str(n_grid[j])) # Same as above but with neighbor count map on the side
-#   print("")
-#   grid = get_next_grid()
-#   time.sleep(spf)
-  
-
-
-# Use this to print a grid with each cell's neighbor count
-# Effectively tells you what the next round is going to look like
-# for i in n_grid:
-#   print(i)
-
 def main():
   global grid
 
@@ -103,32 +86,25 @@ def main():
   clock = pygame.time.Clock()
   time_elapsed = 0
 
-  size = width, height = 1440, 920
+  size = width, height = 1000, 1000
+  cell_size = cell_width, cell_height = width/gridW, height/gridH
   surface = pygame.display.set_mode(size)
   
   while run:
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
         run = False
-    if time_elapsed > 2000:
+    if time_elapsed > spf*1000:
       time_elapsed = 0
 
-      print("running " + str(time_elapsed / 20))
+      # Clear all rectangles
       surface.fill((0,0,0))
 
-      # for j, row in enumerate(grid):
-      #   for k, val in enumerate(row): 
-      #     if val > 0: 
       for j, row in enumerate(grid):
         for k, val in enumerate(row): 
           if val > 0: 
-            pygame.draw.rect(surface, 255, pygame.Rect(k*105,j*105,100,100))
-          #   print(str("[1]"),end="")
-          # else: 
-          #   print(str("[0]"),end="")
+            pygame.draw.rect(surface, 255, pygame.Rect(k*cell_width,j*cell_height,cell_width,cell_height))
         print(row)
-        # print("\n",end="")
-        # print(str(row) + " -- " + str(n_grid[j])) # Same as above but with neighbor count map on the side
       print("")
       grid = get_next_grid()
 
