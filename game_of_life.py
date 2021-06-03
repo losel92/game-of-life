@@ -9,10 +9,14 @@
 # Enjoy!
 
 import time
+import random
+import pygame
+from pygame.locals import *
+import sys
 
 # Grid dimensions
-gridW = 15
-gridH = 15
+gridW = 10
+gridH = 10
 
 # The cells that will be starting as alive
 starting = [[0,0], [1,1], [1,2], [2,0], [2,1]]
@@ -21,7 +25,7 @@ starting = [[0,0], [1,1], [1,2], [2,0], [2,1]]
 spf = .2
 
 # How many times it will run
-generations = 30
+generations = 5
 
 
 # Create a matrix of 0's:
@@ -70,16 +74,67 @@ def get_next_grid():
 #   sadsadgrid = get_next_grid()
 #   print(str(row) + " -- " + str(n_grid[j]))
 
-for i in range(generations):
-  for j, row in enumerate(grid):
-      print(str(row))
-      # print(str(row) + " -- " + str(n_grid[j])) # Same as above but with neighbor count map on the side
-  print("")
-  grid = get_next_grid()
-  time.sleep(spf)
+# for i in range(generations):
+#   for j, row in enumerate(grid):
+#     for k in row: 
+#       if k > 0: 
+#         print(str("[1]"),end="")
+#       else: 
+#         print(str("[0]"),end="")
+#     print("\n",end="")
+#     # print(str(row) + " -- " + str(n_grid[j])) # Same as above but with neighbor count map on the side
+#   print("")
+#   grid = get_next_grid()
+#   time.sleep(spf)
   
+
 
 # Use this to print a grid with each cell's neighbor count
 # Effectively tells you what the next round is going to look like
 # for i in n_grid:
 #   print(i)
+
+def main():
+  global grid
+
+  pygame.init()
+  run = True
+
+  clock = pygame.time.Clock()
+  time_elapsed = 0
+
+  size = width, height = 1440, 920
+  surface = pygame.display.set_mode(size)
+  
+  while run:
+    for event in pygame.event.get():
+      if event.type == pygame.QUIT:
+        run = False
+    if time_elapsed > 2000:
+      time_elapsed = 0
+
+      print("running " + str(time_elapsed / 20))
+      surface.fill((0,0,0))
+
+      # for j, row in enumerate(grid):
+      #   for k, val in enumerate(row): 
+      #     if val > 0: 
+      for j, row in enumerate(grid):
+        for k, val in enumerate(row): 
+          if val > 0: 
+            pygame.draw.rect(surface, 255, pygame.Rect(k*105,j*105,100,100))
+          #   print(str("[1]"),end="")
+          # else: 
+          #   print(str("[0]"),end="")
+        print(row)
+        # print("\n",end="")
+        # print(str(row) + " -- " + str(n_grid[j])) # Same as above but with neighbor count map on the side
+      print("")
+      grid = get_next_grid()
+
+    dt = clock.tick()
+    time_elapsed += dt
+    pygame.display.update()
+
+
+main()
